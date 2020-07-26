@@ -11,23 +11,52 @@
         SizeChanged="ResizeWindow"
         MinHeight="182.972"
         MinWidth="370.264"
-        MaxHeight="196"
-        MaxWidth="400"
-        Title="Kitchen Timer by Slainger" 
+       
+        Title="Kitchen Timer" 
         Height="182.972" 
         WindowStyle="ToolWindow"
         Width="370.264" 
         Background="#FF071D02">
-    <Grid>
-        <StackPanel x:Name="spButtonsStackPanel" Orientation="Horizontal" Margin="5,5,4,2">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,7">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="18"></RowDefinition>
+            <RowDefinition Height="47*"></RowDefinition>
+            <RowDefinition Height="53*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Row="0">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New Log" />
+                    <MenuItem Header="_Save Log" />
+                    <Separator />
+                    <MenuItem Header="_Exit" Click="Shutdown" />
+                </MenuItem>
+                <MenuItem Header="_View">
+                    <MenuItem Header="_Log" />
+                </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem Header="_Settings" Click="SetTimePeriod" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="_About" />
+                </MenuItem>
+            </Menu>
+            <TextBox AcceptsReturn="True" />
+        </DockPanel>
+        
+        <StackPanel x:Name="spButtonsStackPanel" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5"
+                    Grid.Row="1" Grid.Column="0">
             <StackPanel.Resources>
                 <Style TargetType="Button">
                     <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Margin" Value="1,0,1,0"></Setter>
                     <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="Width" Value="68" />
-                    <Setter Property="Height" Value="68" />
-                    <Setter Property="VerticalAlignment" Value="Top" />
-                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
                 </Style>
             </StackPanel.Resources>
             <Button x:Name="btnStart" Click="StartTimer">
@@ -42,12 +71,13 @@
             <Button x:Name="btnRefresh" Click="ResetTime">
                 <controls:RefreshButtonViewbox></controls:RefreshButtonViewbox>
             </Button>
-            <Button x:Name="btnSettings" Click="SetTimePeriod">
+            <Button x:Name="btnSettings" Click="SetTimePeriod" Visibility="Hidden">
                 <controls:SettingsButtonViewbox></controls:SettingsButtonViewbox>
             </Button>
         </StackPanel>
-        <TextBlock x:Name="tbTime" HorizontalAlignment="Left" TextWrapping="Wrap" 
-                   Text="00:00:00.0" VerticalAlignment="Bottom" Height="85" Width="344" 
-                   FontSize="72" Foreground="#FF18B265"/>
+        <TextBlock x:Name="tbTime" HorizontalAlignment="Stretch"  
+                   Grid.Row="2" Grid.Column="0" Margin="0,-17,0,0"
+                   Text="00:00:00.0" VerticalAlignment="Stretch"   
+                   FontSize="55" Foreground="#FF18B265"/>
     </Grid>
 </Window>
