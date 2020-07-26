@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
+using static KitchenTimer.Constants.FontSizing;
 
 namespace KitchenTimer.Windows
 {
@@ -83,9 +84,9 @@ namespace KitchenTimer.Windows
   
         private void ResizeWindow(object sender, SizeChangedEventArgs e)
         {
-            int newFontSize = (int)(Height / 3.2 + 20);
-            newFontSize = ((int)(newFontSize / 6.0)) * 6;
-            newFontSize = Math.Max(55, newFontSize);
+            int newFontSize = (int)(Height / FontSizeHeightFactor + FontHeightMinStep);
+            newFontSize = Convert.ToInt32( ((int)(newFontSize / FontSizeStepIncrementer)) * FontSizeStepIncrementer);
+            newFontSize = Math.Max(MinimumFontSize, newFontSize);
             if (tbTime.FontSize != newFontSize)
             {
                 tbTime.FontSize = newFontSize;
