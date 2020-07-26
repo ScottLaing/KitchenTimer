@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 
-namespace KitchenTimer
+namespace KitchenTimer.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
