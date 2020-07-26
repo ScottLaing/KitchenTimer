@@ -83,24 +83,12 @@ namespace KitchenTimer.Windows
   
         private void ResizeWindow(object sender, SizeChangedEventArgs e)
         {
-            if (this.Height < 190)
+            int newFontSize = (int)(Height / 3.2 + 20);
+            newFontSize = ((int)(newFontSize / 6.0)) * 6;
+            newFontSize = Math.Max(55, newFontSize);
+            if (tbTime.FontSize != newFontSize)
             {
-                this.tbTime.FontSize = 72;
-                tbTime.Height = 85;
-                tbTime.Width = 344;
-                // Height = "85" Width = "344"
-            }
-            else if (this.Height < 240)
-            {
-                this.tbTime.FontSize = 84;
-                tbTime.Height = 95;
-                tbTime.Width = 400;
-            }
-            else if (this.Height < 280)
-            {
-                this.tbTime.FontSize = 96;
-                tbTime.Height = 110;
-                tbTime.Width = 450;
+                tbTime.FontSize = newFontSize;
             }
         }
  
@@ -192,6 +180,11 @@ namespace KitchenTimer.Windows
         {
             object[] result = new object[] { hrs, mins, secs, tenthsSec };
             return result;
+        }
+
+        private void Shutdown(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
