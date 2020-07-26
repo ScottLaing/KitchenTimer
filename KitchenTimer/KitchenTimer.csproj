@@ -153,21 +153,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icons\StatusStop_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icons\PlayVideo_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icons\StatusRun_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icons\Settings_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icons\Restart_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="icons\Timer_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
