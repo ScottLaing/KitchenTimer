@@ -1,0 +1,53 @@
+﻿<Window x:Class="KitchenTimer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        Icon="icons/Timer_16x.png"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KitchenTimer"
+        xmlns:controls="clr-namespace:KitchenTimer.controls"
+        mc:Ignorable="d"
+        ResizeMode="CanResizeWithGrip"
+        SizeChanged="ResizeWindow"
+        MinHeight="182.972"
+        MinWidth="370.264"
+        MaxHeight="196"
+        MaxWidth="400"
+        Title="Kitchen Timer by Slainger" 
+        Height="182.972" 
+        WindowStyle="ToolWindow"
+        Width="370.264" 
+        Background="#FF071D02">
+    <Grid>
+        <StackPanel x:Name="spButtonsStackPanel" Orientation="Horizontal" Margin="5,5,4,2">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Width" Value="68" />
+                    <Setter Property="Height" Value="68" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                </Style>
+            </StackPanel.Resources>
+            <Button x:Name="btnStart" Click="StartTimer">
+                <controls:StartButtonViewbox></controls:StartButtonViewbox>
+            </Button>
+            <Button x:Name="btnPause" Click="PauseTimer">
+                <controls:PauseButtonViewbox></controls:PauseButtonViewbox>
+            </Button>
+            <Button x:Name="btnStop" Click="StopTimer">
+                <controls:StopButtonViewbox></controls:StopButtonViewbox>
+            </Button>
+            <Button x:Name="btnRefresh" Click="ResetTime">
+                <controls:RefreshButtonViewbox></controls:RefreshButtonViewbox>
+            </Button>
+            <Button x:Name="btnSettings" Click="SetTimePeriod">
+                <controls:SettingsButtonViewbox></controls:SettingsButtonViewbox>
+            </Button>
+        </StackPanel>
+        <TextBlock x:Name="tbTime" HorizontalAlignment="Left" TextWrapping="Wrap" 
+                   Text="00:00:00.0" VerticalAlignment="Bottom" Height="85" Width="344" 
+                   FontSize="72" Foreground="#FF18B265"/>
+    </Grid>
+</Window>
