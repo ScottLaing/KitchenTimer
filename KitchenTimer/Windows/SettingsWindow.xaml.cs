@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace KitchenTimer
+namespace KitchenTimer.Windows
 {
     /// <summary>
     /// Interaction logic for SetTime.xaml
@@ -31,13 +31,14 @@ namespace KitchenTimer
         {
             try
             {
+              
                 TimeValue = Convert.ToDouble(this.txtSetTime2.Text);
                 this.DialogResult = true;
                 this.Close();
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Time needs to be a number, can have decimal place, please retry.");
+                MessageBox.Show($"Some error with saving: {ex.Message}.");
             }
         }
     }
