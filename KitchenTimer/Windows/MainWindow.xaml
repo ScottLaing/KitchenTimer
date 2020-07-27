@@ -39,10 +39,10 @@
                     <MenuItem Header="_Log" />
                 </MenuItem>
                 <MenuItem Header="_Options">
-                    <MenuItem Header="_Settings" Click="SetTimePeriod" />
+                    <MenuItem Header="_Settings" Click="ChangeSettings" />
                 </MenuItem>
                 <MenuItem Header="_Help">
-                    <MenuItem Header="_About" />
+                    <MenuItem Header="_About" Click="ShowAboutWindow" />
                 </MenuItem>
             </Menu>
             <TextBox AcceptsReturn="True" />
@@ -71,7 +71,7 @@
             <Button x:Name="btnRefresh" Click="ResetTime">
                 <controls:RefreshButtonViewbox></controls:RefreshButtonViewbox>
             </Button>
-            <Button x:Name="btnSettings" Click="SetTimePeriod" Visibility="Hidden">
+            <Button x:Name="btnSettings" Click="ChangeSettings" Visibility="Hidden">
                 <controls:SettingsButtonViewbox></controls:SettingsButtonViewbox>
             </Button>
         </StackPanel>

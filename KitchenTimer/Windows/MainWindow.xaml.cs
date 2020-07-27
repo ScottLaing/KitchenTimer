@@ -57,6 +57,15 @@ namespace KitchenTimer.Windows
             }
         }
 
+        #region Menu Event Handlers
+
+        private void Shutdown(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        #endregion
+
         #region UI Event Handlers
 
         private void StartTimer(object sender, RoutedEventArgs e)
@@ -69,7 +78,7 @@ namespace KitchenTimer.Windows
             isTimerRunning = !isTimerRunning;
         }
 
-        private void SetTimePeriod(object sender, RoutedEventArgs e)
+        private void ChangeSettings(object sender, RoutedEventArgs e)
         {
             var setTime = new SettingsWindow();
             var dlgResult = setTime.ShowDialog();
@@ -82,16 +91,7 @@ namespace KitchenTimer.Windows
             }
         }
   
-        private void ResizeWindow(object sender, SizeChangedEventArgs e)
-        {
-            int newFontSize = (int)(Height / FontSizeHeightFactor + FontHeightMinStep);
-            newFontSize = Convert.ToInt32( ((int)(newFontSize / FontSizeStepIncrementer)) * FontSizeStepIncrementer);
-            newFontSize = Math.Max(MinimumFontSize, newFontSize);
-            if (tbTime.FontSize != newFontSize)
-            {
-                tbTime.FontSize = newFontSize;
-            }
-        }
+ 
  
         private void StopTimer(object sender, RoutedEventArgs e)
         {
@@ -167,6 +167,17 @@ namespace KitchenTimer.Windows
             }
         }
 
+        private void ResizeWindow(object sender, SizeChangedEventArgs e)
+        {
+            int newFontSize = (int)(Height / FontSizeHeightFactor + FontHeightMinStep);
+            newFontSize = Convert.ToInt32(((int)(newFontSize / FontSizeStepIncrementer)) * FontSizeStepIncrementer);
+            newFontSize = Math.Max(MinimumFontSize, newFontSize);
+            if (tbTime.FontSize != newFontSize)
+            {
+                tbTime.FontSize = newFontSize;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -183,9 +194,10 @@ namespace KitchenTimer.Windows
             return result;
         }
 
-        private void Shutdown(object sender, RoutedEventArgs e)
+        private void ShowAboutWindow(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            var aboutWindow = new AboutWindow();
+            aboutWindow.ShowDialog();
         }
     }
 }
