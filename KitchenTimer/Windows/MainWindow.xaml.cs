@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Media;
 using System.Threading;
 using System.Windows;
 using static KitchenTimer.Constants.FontSizing;
@@ -15,10 +17,53 @@ namespace KitchenTimer.Windows
         private const int MilliSecondTimerPeriod = 10;
         private Timer _timer = null;
         private double currentTimeVal = 15.0;
-        private object concurrencyLock = new object();
+
+        private object currentTimeLock = new object();
+        private object alarmPlayingLock = new object();
+        private object isTimerRunningLock = new object();
+        private object alarmStateChangeLock = new object();
+
         private bool isTimerRunning = false;
         private double lastResetValue = 15.0;
         private delegate void UpdateTextBlockCallback(int hr, int min, int sec, int tenthsSec);
+
+        private SoundPlayer player;
+        private bool alarmPlaying = false;
+
+        public bool IsTimerRunning
+        {
+            get
+            {
+                lock (isTimerRunningLock)
+                {
+                    return isTimerRunning;
+                }
+            }
+            set
+            {
+                lock (isTimerRunningLock)
+                {
+                    isTimerRunning = value;
+                }
+            }
+        }
+        public bool AlarmPlaying
+        {
+            get
+            {
+                lock (alarmPlayingLock)
+                {
+                    return alarmPlaying;
+                }
+            }
+            set
+            {
+                lock (alarmPlayingLock)
+                {
+                    alarmPlaying = value;
+                }
+            }
+        }
 
         /// <summary>
         /// get or set the current timer val, this is protected by a lock because a background timer thread may try to change the value.
@@ -27,14 +72,14 @@ namespace KitchenTimer.Windows
         {
             get
             {
-                lock (concurrencyLock)
+                lock (currentTimeLock)
                 {
                     return currentTimeVal;
                 }
             }
             set
             {
-                lock (concurrencyLock)
+                lock (currentTimeLock)
                 {
                     currentTimeVal = value;
                 }
@@ -45,14 +90,93 @@ namespace KitchenTimer.Windows
         {
             InitializeComponent();
             RefreshTimeDisplay();
-           _timer = new Timer(TimerCallback, null, 0, MilliSecondTimerPeriod);
+            _timer = new Timer(TimerCallback, null, 0, MilliSecondTimerPeriod);
+            InitializeSoundPlayer();
         }
+
+        private void InitializeSoundPlayer()
+        {
+            player = new SoundPlayer();
+
+            player.LoadCompleted += new AsyncCompletedEventHandler(player_LoadCompleted);
+            player.SoundLocationChanged += new EventHandler(player_LocationChanged);
+
+            LoadAlarm(1);
+        }
+
+        #region Alarm Player related
+
+        private void player_LoadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            string message = "sound file load completed"; 
+            ReportStatus(message);
+        }
+
+        private void LoadAlarm(int alarmNumber)
+        {
+            try
+            {
+               // todo: location works for debugging but move it to better place soon 
+                player.SoundLocation = $"../../Resources/sounds/Alarm{alarmNumber:00}.wav";
+
+                // Load the .wav file.
+                player.LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                ReportStatus(ex.Message);
+            }
+        }
+
+        // Handler for the SoundLocationChanged event.
+        private void player_LocationChanged(object sender, EventArgs e)
+        {
+            string message = String.Format("SoundLocationChanged: {0}",
+                player.SoundLocation);
+            ReportStatus(message);
+        }
+
+        private void PlayAlarm()
+        {
+            ReportStatus("Looping .wav file asynchronously.");
+            lock (alarmStateChangeLock)
+            {
+                if (!AlarmPlaying)
+                {
+                    player.PlayLooping();
+                    AlarmPlaying = true;
+                }
+            }
+        }
+
+        // Stops the currently playing .wav file, if any.
+        private void StopAlarm()
+        {
+            lock (alarmStateChangeLock)
+            {
+                if (AlarmPlaying)
+                {
+                    player.Stop();
+                    AlarmPlaying = false;
+                }
+            }
+            ReportStatus("Stopped by user.");
+        }
+
+        #endregion
 
         private void TimerCallback(Object o)
         {
-            if (isTimerRunning)
+            if (IsTimerRunning)
             {
                 CurrentTimeVal = Math.Max(0, CurrentTimeVal - DecreasePeriod);
+                if (currentTimeVal < .01)
+                {
+                    if (! AlarmPlaying)
+                    {
+                        PlayAlarm();
+                    }
+                }
                 RefreshTimeDisplay();
             }
         }
@@ -64,18 +188,24 @@ namespace KitchenTimer.Windows
             Application.Current.Shutdown();
         }
 
+        private void ShowAboutWindow(object sender, RoutedEventArgs e)
+        {
+            var aboutWindow = new AboutWindow();
+            aboutWindow.ShowDialog();
+        }
+
         #endregion
 
         #region UI Event Handlers
 
         private void StartTimer(object sender, RoutedEventArgs e)
         {
-            isTimerRunning = true;
+            IsTimerRunning = true;
         }
 
         private void PauseTimer(object sender, RoutedEventArgs e)
         {
-            isTimerRunning = !isTimerRunning;
+            IsTimerRunning = !IsTimerRunning;
         }
 
         private void ChangeSettings(object sender, RoutedEventArgs e)
@@ -90,12 +220,12 @@ namespace KitchenTimer.Windows
                 RefreshTimeDisplay();
             }
         }
-  
- 
  
         private void StopTimer(object sender, RoutedEventArgs e)
         {
-            isTimerRunning = false;
+            IsTimerRunning = false;
+            // if an alarm is going off, stop it
+            StopAlarm();
         }
 
         private void ResetTime(object sender, RoutedEventArgs e)
@@ -194,10 +324,14 @@ namespace KitchenTimer.Windows
             return result;
         }
 
-        private void ShowAboutWindow(object sender, RoutedEventArgs e)
+        private static void ReportStatus(string statusMessage)
         {
-            var aboutWindow = new AboutWindow();
-            aboutWindow.ShowDialog();
+            if (!string.IsNullOrEmpty(statusMessage))
+            {
+                Debug.WriteLine(statusMessage);
+            }
         }
+
+ 
     }
 }
