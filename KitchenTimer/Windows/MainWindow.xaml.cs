@@ -94,6 +94,8 @@ namespace KitchenTimer.Windows
             InitializeSoundPlayer();
         }
 
+        #region Alarm and Sound Player related
+
         private void InitializeSoundPlayer()
         {
             player = new SoundPlayer();
@@ -104,19 +106,11 @@ namespace KitchenTimer.Windows
             LoadAlarm(1);
         }
 
-        #region Alarm Player related
-
-        private void player_LoadCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            string message = "sound file load completed"; 
-            ReportStatus(message);
-        }
-
         private void LoadAlarm(int alarmNumber)
         {
             try
             {
-               // todo: location works for debugging but move it to better place soon 
+                // todo: location works for debugging but move it to better place soon 
                 player.SoundLocation = $"../../Resources/sounds/Alarm{alarmNumber:00}.wav";
 
                 // Load the .wav file.
@@ -128,6 +122,14 @@ namespace KitchenTimer.Windows
             }
         }
 
+        #region Event Handlers
+
+        private void player_LoadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            string message = "sound file load completed"; 
+            ReportStatus(message);
+        }
+
         // Handler for the SoundLocationChanged event.
         private void player_LocationChanged(object sender, EventArgs e)
         {
@@ -135,6 +137,10 @@ namespace KitchenTimer.Windows
                 player.SoundLocation);
             ReportStatus(message);
         }
+
+        #endregion
+
+        #region Change Alarm ON/OFF
 
         private void PlayAlarm()
         {
@@ -162,6 +168,8 @@ namespace KitchenTimer.Windows
             }
             ReportStatus("Stopped by user.");
         }
+
+        #endregion
 
         #endregion
 
