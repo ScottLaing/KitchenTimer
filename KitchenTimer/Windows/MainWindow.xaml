@@ -33,13 +33,13 @@
                     <MenuItem Header="_New Log" />
                     <MenuItem Header="_Save Log" />
                     <Separator />
-                    <MenuItem Header="_Exit" Click="Shutdown" />
+                    <MenuItem Header="_Exit" Click="ShutdownApp" />
                 </MenuItem>
                 <MenuItem Header="_View">
                     <MenuItem Header="_Log" />
                 </MenuItem>
                 <MenuItem Header="_Options">
-                    <MenuItem Header="_Settings" Click="ChangeSettings" />
+                    <MenuItem Header="_Settings" Click="ShowSettingsWindow" />
                 </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="_About" Click="ShowAboutWindow" />
@@ -68,10 +68,10 @@
             <Button x:Name="btnStop" Click="StopTimer">
                 <controls:StopButtonViewbox></controls:StopButtonViewbox>
             </Button>
-            <Button x:Name="btnRefresh" Click="ResetTime">
+            <Button x:Name="btnRefresh" Click="ResetTimer">
                 <controls:RefreshButtonViewbox></controls:RefreshButtonViewbox>
             </Button>
-            <Button x:Name="btnSettings" Click="ChangeSettings" Visibility="Hidden">
+            <Button x:Name="btnSettings" Click="ShowSettingsWindow" Visibility="Hidden">
                 <controls:SettingsButtonViewbox></controls:SettingsButtonViewbox>
             </Button>
         </StackPanel>
