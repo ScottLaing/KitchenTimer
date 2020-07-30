@@ -86,6 +86,7 @@
     <Compile Include="controls\StopButtonViewbox.xaml.cs">
       <DependentUpon>StopButtonViewbox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Alarm.cs" />
     <Compile Include="Windows\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>

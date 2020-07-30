@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KitchenTimer.Entities;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Media;
@@ -112,6 +113,8 @@ namespace KitchenTimer.Windows
             }
         }
 
+        public Alarm CurrentAlarm { get; private set; }
+
         #endregion
 
         #region Constructors 
@@ -162,6 +165,23 @@ namespace KitchenTimer.Windows
             catch (Exception ex)
             {
                 LogStatus(ex.Message);
+            }
+        }
+
+        private void LoadAlarm(string alarmName)
+        {
+            try
+            {
+                // todo: location works for debugging but move it to better place soon 
+                player.SoundLocation = $"../../Resources/sounds/{alarmName}.wav";
+
+                // Load the .wav file.
+                player.Load();
+            }
+            catch (Exception ex)
+            {
+                player.SoundLocation = "";
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -278,9 +298,22 @@ namespace KitchenTimer.Windows
             var dlgResult = setTime.ShowDialog();
             if (dlgResult.HasValue && dlgResult.Value && setTime.TimeValue > 0)
             {
+                ChangeSettings(setTime);
+            }
+        }
+
+        private void ChangeSettings(SettingsWindow setTime)
+        {
+            if (setTime != null)
+            {
                 var newTime = setTime.TimeValue;
                 CurrentTimeVal = newTime;
                 lastResetValue = newTime;
+                if (setTime.AlarmChosen != null)
+                {
+                    CurrentAlarm = setTime.AlarmChosen;
+                    LoadAlarm(CurrentAlarm.WavName);
+                }
                 RefreshTimeDisplay();
             }
         }
