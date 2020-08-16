@@ -31,18 +31,45 @@ namespace KitchenTimer.Windows
         private bool alarmIsPlaying = false;
 
         private SoundPlayer player;
+        private Alarm currentAlarm;
 
         public SettingsWindow()
         {
             InitializeComponent();
+        }
+
+        public SettingsWindow(Alarm currentAlarm, double countDown) : this()
+        {
+            this.currentAlarm = currentAlarm;
             cmbAlarmSound.ItemsSource = Constants.AlarmList;
+            txtSetTime2.Value = countDown;
+            int index = FindAlarmIndex(currentAlarm);
+            cmbAlarmSound.SelectedIndex = index;
             InitializeSoundPlayer();
+        }
+
+        private static int FindAlarmIndex(Alarm currentAlarm)
+        {
+            int index = -1;
+            int k = 0;
+            foreach (var item in Constants.AlarmList)
+            {
+                if (item.WavName == currentAlarm.WavName)
+                {
+                    index = k;
+                    break;
+                }
+                k++;
+            }
+
+            return index;
         }
 
         private void InitializeSoundPlayer()
         {
             player = new SoundPlayer();
-            LoadAlarm(1);
+            LoadAlarm(this.currentAlarm.WavName);
+            
         }
 
         private void LoadAlarm(int alarmNumber)
