@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Media;
 using System.Threading;
 using System.Windows;
@@ -157,7 +158,14 @@ namespace KitchenTimer.Windows
             try
             {
                 // todo: location works for debugging but move it to better place soon 
-                player.SoundLocation = $"../../Resources/sounds/Alarm{alarmNumber:00}.wav";
+                string path = $"../../Resources/sounds/Alarm{alarmNumber:00}.wav";
+                player.SoundLocation = path;
+                string waveFile = Path.GetFileNameWithoutExtension(path);
+                CurrentAlarm = new Alarm()
+                {
+                    WavName = waveFile,
+                    Title = waveFile
+                };
 
                 // Load the .wav file.
                 player.LoadAsync();
@@ -294,15 +302,15 @@ namespace KitchenTimer.Windows
         /// <param name="e"></param>
         private void ShowSettingsWindow(object sender, RoutedEventArgs e)
         {
-            var setTime = new SettingsWindow();
+            var setTime = new SettingsWindow(CurrentAlarm, lastResetValue);
             var dlgResult = setTime.ShowDialog();
             if (dlgResult.HasValue && dlgResult.Value && setTime.TimeValue > 0)
             {
-                ChangeSettings(setTime);
+                ChangeSettings(setTime, CurrentAlarm);
             }
         }
 
-        private void ChangeSettings(SettingsWindow setTime)
+        private void ChangeSettings(SettingsWindow setTime, Alarm currentAlarm)
         {
             if (setTime != null)
             {
