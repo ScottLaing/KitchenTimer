@@ -23,52 +23,52 @@ namespace KitchenTimer
           new Alarm()
           {
               WavName = "Alarm01",
-              Title = "Alarm01"
+              Title = "Lively"
           },
           new Alarm()
           {
               WavName = "Alarm02",
-              Title = "Alarm02"
+              Title = "Raindrops"
           },
           new Alarm()
           {
               WavName = "Alarm03",
-              Title = "Alarm03"
+              Title = "Gentle River"
           },
             new Alarm()
           {
               WavName = "Alarm04",
-              Title = "Alarm04"
+              Title = "Tiptap Drops"
           },
           new Alarm()
           {
               WavName = "Alarm05",
-              Title = "Alarm05"
+              Title = "Bells"
           },
           new Alarm()
           {
               WavName = "Alarm06",
-              Title = "Alarm06"
+              Title = "Synth Pulse"
           },        
           new Alarm()
           {
               WavName = "Alarm07",
-              Title = "Alarm07"
+              Title = "Simple Tone"
           },         
           new Alarm()
           {
               WavName = "Alarm08",
-              Title = "Alarm08"
+              Title = "Tenor Taps"
           },         
           new Alarm()
           {
               WavName = "Alarm09",
-              Title = "Alarm09"
+              Title = "Sleepy Fog"
           },         
           new Alarm()
           {
               WavName = "Alarm10",
-              Title = "Alarm10"
+              Title = "Alien Fire"
           },         
         };
     }
