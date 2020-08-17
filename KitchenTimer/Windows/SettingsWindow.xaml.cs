@@ -1,21 +1,10 @@
 ﻿using KitchenTimer.Entities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Media;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace KitchenTimer.Windows
 {
@@ -54,7 +43,8 @@ namespace KitchenTimer.Windows
             int k = 0;
             foreach (var item in Constants.AlarmList)
             {
-                if (item.WavName == currentAlarm.WavName)
+                if (item.WavName + ".wav" == currentAlarm.WavName ||
+                    item.WavName == currentAlarm.WavName)
                 {
                     index = k;
                     break;
@@ -92,32 +82,50 @@ namespace KitchenTimer.Windows
         {
             try
             {
-                // todo: location works for debugging but move it to better place soon 
-                player.SoundLocation = $"../../Resources/sounds/{alarmName}.wav";
+
+                //get the current assembly
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+                //load the embedded resource as a stream
+                var file = $"{alarmName}.wav";
+                file = file.Replace(".wav.wav", ".wav");
+
+                var stream = assembly.GetManifestResourceStream(string.Format("{0}.Resources.{1}", assembly.GetName().Name, file));
+
+                //load the stream into the player
+                player = new System.Media.SoundPlayer(stream);
 
                 // Load the .wav file.
                 player.Load();
             }
             catch (Exception ex)
             {
-                player.SoundLocation = "";
+                MessageBox.Show(ex.Message);
+                player.SoundLocation = $"../../Resources/sounds/{alarmName}.wav";
+
+                // Load the .wav file.
+                player.Load();
+
+                //player.SoundLocation = "";
                 Debug.WriteLine(ex.Message);
             }
         }
 
         private void PlayAlarm()
         {
-            if (string.IsNullOrWhiteSpace(player.SoundLocation))
-            {
-                MessageBox.Show("Sound not loaded yet, cannot play.");
-                return;
-            }
             if (alarmIsPlaying)
             {
                 StopAlarm();
             }
-            player.PlayLooping();
-            alarmIsPlaying = true;
+            try
+            {
+                player.PlayLooping();
+                alarmIsPlaying = true;
+            }
+            catch
+            {
+
+            }
         }
 
         private void StopAlarm()
@@ -163,7 +171,7 @@ namespace KitchenTimer.Windows
             StopAlarm();
         }
 
-        private void cmbAlarmSound_Selected(object sender, RoutedEventArgs e)
+        private void cmbAlarmSound_Selected(object sender, SelectionChangedEventArgs e)
         {
             var alarm = this.cmbAlarmSound.SelectedItem as Alarm;
             if (alarm == null)
@@ -171,7 +179,13 @@ namespace KitchenTimer.Windows
                 MessageBox.Show("Trouble getting alarm location from drop down choice.");
                 return;
             }
+
             AlarmChosen = alarm;
+            if (alarmIsPlaying)
+            {
+                StopAlarm();
+                alarmIsPlaying = false;
+            }
         }
     }
 }
