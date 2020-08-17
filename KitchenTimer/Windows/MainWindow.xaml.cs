@@ -158,9 +158,16 @@ namespace KitchenTimer.Windows
             try
             {
                 // todo: location works for debugging but move it to better place soon 
-                string path = $"../../Resources/sounds/Alarm{alarmNumber:00}.wav";
-                player.SoundLocation = path;
-                string waveFile = Path.GetFileNameWithoutExtension(path);
+                string path;
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+                var file = $"Alarm{alarmNumber:00}.wav";
+                var stream = assembly.GetManifestResourceStream(string.Format("{0}.Resources.{1}", assembly.GetName().Name, file));
+
+                //load the stream into the player
+                player = new System.Media.SoundPlayer(stream);
+
+                string waveFile = file;
                 CurrentAlarm = new Alarm()
                 {
                     WavName = waveFile,
@@ -168,7 +175,16 @@ namespace KitchenTimer.Windows
                 };
 
                 // Load the .wav file.
-                player.LoadAsync();
+                try
+                {
+                    player.Load();
+                }
+                catch
+                {
+                    path = $"Resources/sounds/Alarm{alarmNumber:00}.wav";
+                    player.SoundLocation = path;
+                    player.LoadAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -180,11 +196,19 @@ namespace KitchenTimer.Windows
         {
             try
             {
-                // todo: location works for debugging but move it to better place soon 
-                player.SoundLocation = $"../../Resources/sounds/{alarmName}.wav";
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                var file = alarmName;
+                if (!alarmName.EndsWith(".wav"))
+                {
+                    file += ".wav";
+                }
+                var stream = assembly.GetManifestResourceStream(string.Format("{0}.Resources.{1}", assembly.GetName().Name, file));
 
-                // Load the .wav file.
+                //load the stream into the player
+                player = new System.Media.SoundPlayer(stream);
+
                 player.Load();
+
             }
             catch (Exception ex)
             {
