@@ -203,18 +203,6 @@
     <Resource Include="icons\Timer_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\sounds\Alarm01.wav" />
-    <None Include="Resources\sounds\Alarm02.wav" />
-    <None Include="Resources\sounds\Alarm03.wav" />
-    <None Include="Resources\sounds\Alarm04.wav" />
-    <None Include="Resources\sounds\Alarm05.wav" />
-    <None Include="Resources\sounds\Alarm06.wav" />
-    <None Include="Resources\sounds\Alarm07.wav" />
-    <None Include="Resources\sounds\Alarm08.wav" />
-    <None Include="Resources\sounds\Alarm09.wav" />
-    <None Include="Resources\sounds\Alarm10.wav" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
@@ -227,16 +215,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <PublishFile Include="Resources\sounds\Alarm01.wav">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>File</FileType>
-    </PublishFile>
     <PublishFile Include="Resources\sounds\Alarm02.wav">
       <Visible>False</Visible>
       <Group>

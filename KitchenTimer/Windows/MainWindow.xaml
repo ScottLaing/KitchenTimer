@@ -30,6 +30,7 @@
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
+                    <MenuItem Header="_New Timer Window" Click="MenuItem_Click" />
                     <MenuItem Header="_New Log" />
                     <MenuItem Header="_Save Log" />
                     <Separator />
