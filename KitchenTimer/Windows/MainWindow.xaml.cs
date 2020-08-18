@@ -130,6 +130,11 @@ namespace KitchenTimer.Windows
             InitializeSoundPlayer();
         }
 
+        public MainWindow(int windowCount) : this()
+        {
+            this.Title = $"Kitchen Timer ({windowCount})";
+        }
+
         #endregion
 
         #region Alarm and Sound Player related
@@ -528,5 +533,12 @@ namespace KitchenTimer.Windows
         }
 
         #endregion
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var app = Application.Current as App;
+            var mainWin = new MainWindow(++app.NewWindowCounter);
+            mainWin.Show();
+        }
     }
 }

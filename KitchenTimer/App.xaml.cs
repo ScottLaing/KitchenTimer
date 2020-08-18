@@ -16,6 +16,8 @@ namespace KitchenTimer
     public partial class App : Application
     {
 
+        public int NewWindowCounter { get; set; } = 1;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
