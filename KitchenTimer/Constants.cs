@@ -1,15 +1,12 @@
 ﻿using KitchenTimer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KitchenTimer
 {
     public class Constants
     {
         public const string AppTitle = "Kitchen Timer";
+        public const string WavExtension = ".wav";
+
         public static class FontSizing
         {
             public const double FontSizeHeightFactor = 3.2;
@@ -18,7 +15,7 @@ namespace KitchenTimer
             public const int MinimumFontSize = 55;
         }
 
-        public static Alarm[] AlarmList = new Alarm[]
+        public static readonly Alarm[] AlarmList = new Alarm[]
         {
           new Alarm()
           {
