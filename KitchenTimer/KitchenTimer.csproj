@@ -266,9 +266,6 @@
     <Resource Include="Images\purple.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\red.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Images\red2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

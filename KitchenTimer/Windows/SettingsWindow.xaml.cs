@@ -265,5 +265,14 @@ namespace KitchenTimer.Windows
         }
 
         #endregion
+
+        private void txtSetTime2_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (alarmIsPlaying)
+            {
+                StopAlarm();
+                alarmIsPlaying = false;
+            }
+        }
     }
 }
