@@ -2,7 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Media;
 using System.Threading;
 using System.Windows;
@@ -25,6 +24,8 @@ namespace KitchenTimer.Windows
         private Timer _timer = null;
         // current time for count down
         private double currentTimeVal = 15.0;
+
+        System.Reflection.Assembly assembly;
 
         // utility locks to control access to core values, needed as timer runs in background thread
         private object currentTimeLock = new object();
@@ -119,6 +120,7 @@ namespace KitchenTimer.Windows
         #endregion
 
         #region Constructors 
+
         /// <summary>
         /// constructor
         /// </summary>
@@ -130,6 +132,10 @@ namespace KitchenTimer.Windows
             InitializeSoundPlayer();
         }
 
+        /// <summary>
+        /// secondary window constructor
+        /// </summary>
+        /// <param name="windowCount"></param>
         public MainWindow(int windowCount) : this()
         {
             this.Title = $"Kitchen Timer ({windowCount})";
@@ -164,7 +170,10 @@ namespace KitchenTimer.Windows
             {
                 // todo: location works for debugging but move it to better place soon 
                 string path;
-                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                if (assembly == null)
+                {
+                    assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                }
 
                 var file = $"Alarm{alarmNumber:00}.wav";
                 var stream = assembly.GetManifestResourceStream(string.Format("{0}.Resources.{1}", assembly.GetName().Name, file));
@@ -197,6 +206,10 @@ namespace KitchenTimer.Windows
             }
         }
 
+        /// <summary>
+        /// load an alarm
+        /// </summary>
+        /// <param name="alarmName"></param>
         private void LoadAlarm(string alarmName)
         {
             try
@@ -339,6 +352,11 @@ namespace KitchenTimer.Windows
             }
         }
 
+        /// <summary>
+        /// apply new settings
+        /// </summary>
+        /// <param name="setTime"></param>
+        /// <param name="currentAlarm"></param>
         private void ChangeSettings(SettingsWindow setTime, Alarm currentAlarm)
         {
             if (setTime != null)
@@ -501,6 +519,13 @@ namespace KitchenTimer.Windows
             }
         }
 
+        private void NewTimerWindow_Click(object sender, RoutedEventArgs e)
+        {
+            var app = Application.Current as App;
+            var mainWin = new MainWindow(++app.NewWindowCounter);
+            mainWin.Show();
+        }
+
         #endregion
 
         #region Utility Methods
@@ -533,12 +558,5 @@ namespace KitchenTimer.Windows
         }
 
         #endregion
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var app = Application.Current as App;
-            var mainWin = new MainWindow(++app.NewWindowCounter);
-            mainWin.Show();
-        }
     }
 }

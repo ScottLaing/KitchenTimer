@@ -1,4 +1,5 @@
 ﻿using KitchenTimer.Entities;
+using KitchenTimer.Resx;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,20 +14,51 @@ namespace KitchenTimer.Windows
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        #region Fields
 
-        public double TimeValue { get; set; } = 0;
-        public Alarm AlarmChosen { get; set; } = null;
+        // current assembly
+        private System.Reflection.Assembly assembly;
 
+        // whether an alarm is playing now
         private bool alarmIsPlaying = false;
 
+        // the sound player used by dialog for testing alarm sounds
         private SoundPlayer player;
+
+        // the current alarm selected
         private Alarm currentAlarm;
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// time value chosen by dialog call
+        /// </summary>
+        public double TimeValue { get; set; } = 0;
+
+        /// <summary>
+        /// alarm chosen by dialog call
+        /// </summary>
+        public Alarm AlarmChosen { get; set; } = null;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// main constructor
+        /// </summary>
         public SettingsWindow()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// overloaded constructor passing in current alarm and current counter time value
+        /// </summary>
+        /// <param name="currentAlarm"></param>
+        /// <param name="countDown"></param>
         public SettingsWindow(Alarm currentAlarm, double countDown) : this()
         {
             this.currentAlarm = currentAlarm;
@@ -37,63 +69,45 @@ namespace KitchenTimer.Windows
             InitializeSoundPlayer();
         }
 
-        private static int FindAlarmIndex(Alarm currentAlarm)
-        {
-            int index = -1;
-            int k = 0;
-            foreach (var item in Constants.AlarmList)
-            {
-                if (item.WavName + ".wav" == currentAlarm.WavName ||
-                    item.WavName == currentAlarm.WavName)
-                {
-                    index = k;
-                    break;
-                }
-                k++;
-            }
+        #endregion
 
-            return index;
-        }
+        #region Methods
 
+        /// <summary>
+        /// setup sound player, load in current alarm
+        /// </summary>
         private void InitializeSoundPlayer()
         {
             player = new SoundPlayer();
             LoadAlarm(this.currentAlarm.WavName);
-            
         }
 
-        private void LoadAlarm(int alarmNumber)
-        {
-            try
-            {
-                // todo: location works for debugging but move it to better place soon 
-                player.SoundLocation = $"../../Resources/sounds/Alarm{alarmNumber:00}.wav";
-
-                // Load the .wav file.
-                player.Load();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-        }
-
+        /// <summary>
+        /// load alarm of given name into sound player
+        /// </summary>
+        /// <param name="alarmName"></param>
         private void LoadAlarm(string alarmName)
         {
             try
             {
-
-                //get the current assembly
-                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                // note about wav file processing in the project:
+                // a normal inclusion of a data Resource in WPF as a "Resource" file type fails and the wav won't play.
+                // using "Embedded Resource" file type however for the wav files, works ok.  
+                if (assembly == null)
+                {
+                    assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                }
 
                 //load the embedded resource as a stream
-                var file = $"{alarmName}.wav";
-                file = file.Replace(".wav.wav", ".wav");
+                var wavFile = $"{alarmName}{Constants.WavExtension}";
+                wavFile = CleanFormat(wavFile);
 
-                var stream = assembly.GetManifestResourceStream(string.Format("{0}.Resources.{1}", assembly.GetName().Name, file));
+                var name = assembly.GetName().Name;
+                var embeddedPath = string.Format(Strings.EmbeddedResourcePath, name, wavFile);
+                var stream = assembly.GetManifestResourceStream(embeddedPath);
 
                 //load the stream into the player
-                player = new System.Media.SoundPlayer(stream);
+                player = new SoundPlayer(stream);
 
                 // Load the .wav file.
                 player.Load();
@@ -101,16 +115,13 @@ namespace KitchenTimer.Windows
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                player.SoundLocation = $"../../Resources/sounds/{alarmName}.wav";
-
-                // Load the .wav file.
-                player.Load();
-
-                //player.SoundLocation = "";
                 Debug.WriteLine(ex.Message);
             }
         }
 
+        /// <summary>
+        /// play the currently selected alarm
+        /// </summary>
         private void PlayAlarm()
         {
             if (alarmIsPlaying)
@@ -122,12 +133,16 @@ namespace KitchenTimer.Windows
                 player.PlayLooping();
                 alarmIsPlaying = true;
             }
-            catch
+            catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
 
+        /// <summary>
+        /// stop the alarm sound (if playing)
+        /// </summary>
         private void StopAlarm()
         {
             if (alarmIsPlaying)
@@ -137,12 +152,15 @@ namespace KitchenTimer.Windows
             }
         }
 
-
-        private void SetTime_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// save the settings
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-
                 TimeValue = Convert.ToDouble(this.txtSetTime2.Text);
                 this.DialogResult = true;
                 StopAlarm();
@@ -150,33 +168,49 @@ namespace KitchenTimer.Windows
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Some error with saving: {ex.Message}.");
+                var error = string.Format(Strings.SavingError, ex.Message);
+                MessageBox.Show(error);
             }
         }
 
+        /// <summary>
+        /// handle clicking play button for drop down alarms
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
             var alarm = this.cmbAlarmSound.SelectedItem as Alarm;
             if (alarm == null)
             {
-                MessageBox.Show("Trouble getting alarm location from drop down choice.");
+                MessageBox.Show(Strings.AlarmDropDownError);
                 return;
             }
             LoadAlarm(alarm.WavName);
             PlayAlarm();
         }
 
+        /// <summary>
+        /// handle window closing event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             StopAlarm();
         }
 
+        /// <summary>
+        /// handle alarm drop down change selection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cmbAlarmSound_Selected(object sender, SelectionChangedEventArgs e)
         {
             var alarm = this.cmbAlarmSound.SelectedItem as Alarm;
             if (alarm == null)
             {
-                MessageBox.Show("Trouble getting alarm location from drop down choice.");
+                MessageBox.Show(Strings.AlarmDropDownError);
                 return;
             }
 
@@ -187,5 +221,49 @@ namespace KitchenTimer.Windows
                 alarmIsPlaying = false;
             }
         }
+
+        #endregion
+
+        #region Utility Methods
+
+        /// <summary>
+        /// get index for alarm situation
+        /// </summary>
+        /// <param name="currentAlarm"></param>
+        /// <returns></returns>
+        private static int FindAlarmIndex(Alarm currentAlarm)
+        {
+            int index = -1;
+            int k = 0;
+            foreach (var item in Constants.AlarmList)
+            {
+                if (item.WavName + Constants.WavExtension == currentAlarm.WavName ||
+                    item.WavName == currentAlarm.WavName)
+                {
+                    index = k;
+                    break;
+                }
+                k++;
+            }
+
+            return index;
+        }
+
+        /// <summary>
+        /// clean up anomalous file formats
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        private static string CleanFormat(string file)
+        {
+            file = file.Replace($"{Constants.WavExtension}{Constants.WavExtension}", Constants.WavExtension);
+            if (!file.EndsWith(Constants.WavExtension))
+            {
+                file += Constants.WavExtension;
+            }
+            return file;
+        }
+
+        #endregion
     }
 }
