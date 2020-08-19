@@ -86,5 +86,14 @@ namespace KitchenTimer.Resx {
                 return ResourceManager.GetString("SavingError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trouble getting application object, cannot continue..
+        /// </summary>
+        internal static string TroubleGettingApplicationObject {
+            get {
+                return ResourceManager.GetString("TroubleGettingApplicationObject", resourceCulture);
+            }
+        }
     }
 }

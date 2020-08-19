@@ -126,4 +126,7 @@
   <data name="SavingError" xml:space="preserve">
     <value>Some error with saving: {0}</value>
   </data>
+  <data name="TroubleGettingApplicationObject" xml:space="preserve">
+    <value>Trouble getting application object, cannot continue.</value>
+  </data>
 </root>

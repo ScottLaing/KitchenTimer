@@ -1,10 +1,12 @@
 ﻿using KitchenTimer.Entities;
+using KitchenTimer.Resx;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Media;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using static KitchenTimer.Constants.FontSizing;
 
 namespace KitchenTimer.Windows
@@ -25,6 +27,7 @@ namespace KitchenTimer.Windows
         // current time for count down
         private double currentTimeVal = 15.0;
 
+        // reference to local assembly
         System.Reflection.Assembly assembly;
 
         // utility locks to control access to core values, needed as timer runs in background thread
@@ -39,7 +42,6 @@ namespace KitchenTimer.Windows
         private double lastResetValue = 15.0;
         // delegate for update text block invoke calls
         private delegate void UpdateTextBlockCallback(int hr, int min, int sec, int tenthsSec);
-
         // sound player object used to play the alarms
         private SoundPlayer player;
 
@@ -115,6 +117,9 @@ namespace KitchenTimer.Windows
             }
         }
 
+        /// <summary>
+        /// current alarm in use for timer
+        /// </summary>
         public Alarm CurrentAlarm { get; private set; }
 
         #endregion
@@ -350,6 +355,7 @@ namespace KitchenTimer.Windows
             {
                 ChangeSettings(setTime, CurrentAlarm);
             }
+            e.Handled = true;
         }
 
         /// <summary>
@@ -519,9 +525,19 @@ namespace KitchenTimer.Windows
             }
         }
 
+        /// <summary>
+        /// handle the new window menu option
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewTimerWindow_Click(object sender, RoutedEventArgs e)
         {
             var app = Application.Current as App;
+            if (app == null)
+            {
+                MessageBox.Show(Strings.TroubleGettingApplicationObject);
+                return;
+            }
             var mainWin = new MainWindow(++app.NewWindowCounter);
             mainWin.Show();
         }
@@ -558,5 +574,38 @@ namespace KitchenTimer.Windows
         }
 
         #endregion
+
+        private void RedColorOption_Click(object sender, RoutedEventArgs e)
+        {
+            tbTime.Foreground = Brushes.Red;
+            e.Handled = true;
+        }
+
+        private void GreenColorOption_Click1(object sender, RoutedEventArgs e)
+        {
+            tbTime.Foreground = Brushes.LightGreen;
+            e.Handled = true;
+        }
+
+        private void BlueColorOption_Click(object sender, RoutedEventArgs e)
+        {
+            tbTime.Foreground = Brushes.LightBlue;
+            e.Handled = true;
+        }
+
+        private void PurpleColorOption_Click(object sender, RoutedEventArgs e)
+        {
+            tbTime.Foreground = Brushes.Purple;
+            e.Handled = true;
+        }
+
+        private void WhiteColorOption_Click(object sender, RoutedEventArgs e)
+        {
+            tbTime.Foreground = Brushes.White; 
+            e.Handled = true;
+        }
+
+        // textBlock.Foreground = new System.Windows.Media.SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFDFD991")); 
+        //#FF18B265
     }
 }
